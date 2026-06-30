@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Venue Booking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0066ff;
+            --gradient: linear-gradient(135deg, #0066ff, #00ccff);
+            --background: #f6f8fc;
+            --card-bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 16px 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin: 0 24px;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        .login-branding {
+            flex: 1;
+            background: var(--gradient);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            color: #ffffff;
+            animation: fadeInLeft 0.8s ease-out;
+        }
+
+        .login-branding h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .login-branding p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .login-form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            background: var(--card-bg);
+            animation: fadeInRight 0.8s ease-out;
+        }
+
+        .login-form h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .login-form button:hover {
+            background: #0052cc;
+        }
+
+        .homepage {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 0 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            background: var(--gradient);
+            border-radius: 16px;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .action-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .action-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .booking-form {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-top: 40px;
+            display: none;
+        }
+
+        .booking-form h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .booking-form label {
+            display: block;
+            margin: 12px 0 6px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .booking-form input,
+        .booking-form select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .booking-form input:focus,
+        .booking-form select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .booking-form button {
+            margin-top: 24px;
+            padding: 14px 24px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .booking-form button:hover {
+            background: #0052cc;
+        }
+
+        .booking-history {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-top: 40px;
+            display: none;
+        }
+
+        .booking-history h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .booking-history table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .booking-history th,
+        .booking-history td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .booking-history th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .booking-history button {
+            padding: 8px 16px;
+            background: #ff3b30;
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .booking-history button:hover {
+            background: #d32f2f;
+        }
+
+        .admin-dashboard {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-top: 40px;
+            display: none;
+        }
+
+        .admin-dashboard h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .admin-dashboard button.approve {
+            background: #00cc00;
+        }
+
+        .admin-dashboard button.approve:hover {
+            background: #00b300;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .login-branding,
+            .login-form {
+                flex: none;
+                padding: 24px;
+            }
+
+            .login-branding h1 {
+                font-size: 32px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="nav-bar" style="display: none;">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#booking">Book Venue</a></li>
+            <li><a href="#history">Booking History</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Login Page -->
+    <div class="login-container" id="login-page">
+        <div class="login-branding">
+            <h1>VenueSync</h1>
+            <p>Book university venues with ease. Streamlined, secure, and modern.</p>
+        </div>
+        <div class="login-form">
+
+            <!-- Sign In Form -->
+            <div id="loginFormContent">
+                <h2>Sign In</h2>
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button onclick="login()">Sign In</button>
+                <p style="text-align:center; margin-top:14px; font-size:14px; color:#666;">
+                    Don't have an account?
+                    <span onclick="showRegister()" style="color:#0066ff; cursor:pointer; text-decoration:underline;">Register</span>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerFormContent" style="display:none;">
+                <h2>Create Account</h2>
+                <input type="text" id="regUsername" placeholder="Username" required>
+                <input type="password" id="regPassword" placeholder="Password (min 6 characters)" required>
+                <input type="password" id="regConfirm" placeholder="Confirm Password" required>
+                <button onclick="register()">Create Account</button>
+                <p style="text-align:center; margin-top:14px; font-size:14px; color:#666;">
+                    Already have an account?
+                    <span onclick="showLogin()" style="color:#0066ff; cursor:pointer; text-decoration:underline;">Sign In</span>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="homepage" id="homepage" style="display: none;">
+        <div class="hero">
+            <h1>Welcome to VenueSync</h1>
+            <p>Manage your university venue bookings effortlessly. Book, track, and approve with a modern, intuitive platform.</p>
+        </div>
+        <div class="quick-actions">
+            <div class="action-card" onclick="showBookingPage()">
+                <h3>Book a Venue</h3>
+                <p>Reserve a venue for your next event in just a few clicks.</p>
+            </div>
+            <div class="action-card" onclick="showHistoryPage()">
+                <h3>View History</h3>
+                <p>Check your past and upcoming bookings at a glance.</p>
+            </div>
+            <div class="action-card" onclick="showAdminDashboard()" id="admin-action" style="display: none;">
+                <h3>Admin Dashboard</h3>
+                <p>Review and approve pending booking requests.</p>
+            </div>
+        </div>
+
+        
+        <div class="booking-form" id="booking-page">
+            <h2>Book a Venue</h2>
+            <label for="event-date">Date</label>
+            <input type="date" id="event-date" required>
+            <label for="event-time">Time</label>
+            <input type="time" id="event-time" required>
+            <button onclick="checkAvailability()">Check Availability</button>
+            <div id="venue-list" style="margin-top: 24px;"></div>
+            <div id="booking-details" style="display: none;">
+                <label for="venue">Venue</label>
+                <select id="venue" required></select>
+                <label for="event-name">Event Name</label>
+                <input type="text" id="event-name" required>
+                <label for="event-purpose">Purpose</label>
+                <input type="text" id="event-purpose" required>
+                <label for="event-id">Event ID</label>
+                <input type="text" id="event-id" required>
+                <label for="special-guests">Special Guests</label>
+                <input type="text" id="special-guests">
+                <button onclick="submitBooking()">Submit Booking</button>
+            </div>
+        </div>
+
+
+        <div class="booking-history" id="history-page">
+            <h2>Booking History</h2>
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Venue</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+
+        
+        <div class="admin-dashboard" id="admin-page">
+            <h2>Admin Dashboard</h2>
+            <table id="admin-table">
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Venue</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+   
+    <div class="loading" id="loading-spinner"></div>
+
+    <script>
+        let currentUser = null;
+        const API_BASE_URL = '';
+
+        function showRegister() {
+            document.getElementById('loginFormContent').style.display = 'none';
+            document.getElementById('registerFormContent').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('registerFormContent').style.display = 'none';
+            document.getElementById('loginFormContent').style.display = 'block';
+        }
+
+        async function register() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirm  = document.getElementById('regConfirm').value;
+
+            if (!username || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            if (password !== confirm) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                showLoading(false);
+
+                if (response.ok) {
+                    alert('Account created! Please sign in.');
+                    showLogin();
+                } else {
+                    alert(data.message || 'Registration failed');
+                }
+            } catch (error) {
+                showLoading(false);
+                alert('Error during registration');
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                showLoading(false);
+
+                if (response.ok) {
+                    currentUser = data.user;
+                    document.getElementById('login-page').style.display = 'none';
+                    document.getElementById('nav-bar').style.display = 'block';
+                    document.getElementById('homepage').style.display = 'block';
+                    if (currentUser.role === 'admin') {
+                        document.getElementById('admin-action').style.display = 'block';
+                    }
+                } else {
+                    alert(data.message || 'Invalid credentials');
+                }
+            } catch (error) {
+                showLoading(false);
+                alert('Error during login');
+            }
+        }
+
+        async function logout() {
+            showLoading(true);
+            try {
+                await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                currentUser = null;
+                document.getElementById('login-page').style.display = 'flex';
+                document.getElementById('nav-bar').style.display = 'none';
+                document.getElementById('homepage').style.display = 'none';
+                document.getElementById('booking-page').style.display = 'none';
+                document.getElementById('history-page').style.display = 'none';
+                document.getElementById('admin-page').style.display = 'none';
+                document.getElementById('admin-action').style.display = 'none';
+                showLogin();
+                showLoading(false);
+            } catch (error) {
+                showLoading(false);
+                alert('Error during logout');
+            }
+        }
+
+        function showBookingPage() {
+            document.getElementById('booking-page').style.display = 'block';
+            document.getElementById('history-page').style.display = 'none';
+            document.getElementById('admin-page').style.display = 'none';
+        }
+
+        function showHistoryPage() {
+            document.getElementById('booking-page').style.display = 'none';
+            document.getElementById('history-page').style.display = 'block';
+            document.getElementById('admin-page').style.display = 'none';
+            loadBookingHistory();
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('booking-page').style.display = 'none';
+            document.getElementById('history-page').style.display = 'none';
+            document.getElementById('admin-page').style.display = 'block';
+            loadAdminBookings();
+        }
+
+        async function checkAvailability() {
+            const date = document.getElementById('event-date').value;
+            const time = document.getElementById('event-time').value;
+            showLoading(true);
+
+            if (!date || !time) {
+                alert('Please select date and time');
+                showLoading(false);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/venues/available?date=${date}&time=${time}`, {
+                    credentials: 'include'
+                });
+                const availableVenues = await response.json();
+                showLoading(false);
+
+                const venueList = document.getElementById('venue-list');
+                const venueSelect = document.getElementById('venue');
+                venueSelect.innerHTML = '';
+
+                if (availableVenues.length > 0) {
+                    venueList.innerHTML = '<h3>Available Venues:</h3><ul>' +
+                        availableVenues.map(v => `<li>${v.name}</li>`).join('') +
+                        '</ul>';
+                    availableVenues.forEach(venue => {
+                        const option = document.createElement('option');
+                        option.value = venue.id;
+                        option.textContent = venue.name;
+                        venueSelect.appendChild(option);
+                    });
+                    document.getElementById('booking-details').style.display = 'block';
+                } else {
+                    venueList.innerHTML = '<p>No venues available for this time slot.</p>';
+                    document.getElementById('booking-details').style.display = 'none';
+                }
+            } catch (error) {
+                showLoading(false);
+                alert('Error checking availability');
+            }
+        }
+
+        async function submitBooking() {
+            const booking = {
+                venueId: parseInt(document.getElementById('venue').value),
+                date: document.getElementById('event-date').value,
+                time: document.getElementById('event-time').value,
+                eventName: document.getElementById('event-name').value,
+                purpose: document.getElementById('event-purpose').value,
+                eventId: document.getElementById('event-id').value,
+                specialGuests: document.getElementById('special-guests').value
+            };
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(booking),
+                    credentials: 'include'
+                });
+
+                showLoading(false);
+                if (response.ok) {
+                    alert('Booking submitted for approval');
+                    document.getElementById('booking-details').style.display = 'none';
+                    document.getElementById('venue-list').innerHTML = '';
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error submitting booking');
+                }
+            } catch (error) {
+                showLoading(false);
+                alert('Error submitting booking');
+            }
+        }
+
+        async function loadBookingHistory() {
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings`, {
+                    credentials: 'include'
+                });
+                const bookings = await response.json();
+                showLoading(false);
+
+                const historyBody = document.getElementById('history-body');
+                historyBody.innerHTML = '';
+
+                bookings.forEach(booking => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${booking.event_name}</td>
+                        <td>${booking.venue_name}</td>
+                        <td>${booking.date}</td>
+                        <td>${booking.time}</td>
+                        <td>${booking.status}</td>
+                        <td><button onclick="cancelBooking(${booking.id})" ${booking.status !== 'pending' ? 'disabled' : ''}>Cancel</button></td>
+                    `;
+                    historyBody.appendChild(row);
+                });
+            } catch (error) {
+                showLoading(false);
+                alert('Error loading booking history');
+            }
+        }
+
+        async function cancelBooking(id) {
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                showLoading(false);
+                if (response.ok) {
+                    alert('Booking cancelled');
+                    loadBookingHistory();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error cancelling booking');
+                }
+            } catch (error) {
+                showLoading(false);
+                alert('Error cancelling booking');
+            }
+        }
+
+        async function loadAdminBookings() {
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings/pending`, {
+                    credentials: 'include'
+                });
+                const bookings = await response.json();
+                showLoading(false);
+
+                const adminBody = document.getElementById('admin-body');
+                adminBody.innerHTML = '';
+
+                bookings.forEach(booking => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${booking.event_name}</td>
+                        <td>${booking.venue_name}</td>
+                        <td>${booking.date}</td>
+                        <td>${booking.time}</td>
+                        <td>${booking.status}</td>
+                        <td><button class="approve" onclick="approveBooking(${booking.id})">Approve</button></td>
+                    `;
+                    adminBody.appendChild(row);
+                });
+            } catch (error) {
+                showLoading(false);
+                alert('Error loading admin bookings');
+            }
+        }
+
+        async function approveBooking(id) {
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings/${id}/approve`, {
+                    method: 'PATCH',
+                    credentials: 'include'
+                });
+
+                showLoading(false);
+                if (response.ok) {
+                    alert('Booking approved');
+                    loadAdminBookings();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error approving booking');
+                }
+            } catch (error) {
+                showLoading(false);
+                alert('Error approving booking');
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading-spinner').style.display = show ? 'block' : 'none';
+        }
+
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = e.target.getAttribute('href');
+                if (href === '#booking') showBookingPage();
+                if (href === '#history') showHistoryPage();
+                if (href === '#home') {
+                    document.getElementById('booking-page').style.display = 'none';
+                    document.getElementById('history-page').style.display = 'none';
+                    document.getElementById('admin-page').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
