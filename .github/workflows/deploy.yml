@@ -17,7 +17,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
-            cd ~/venuesync
+            cd ~/VenueSync
             git pull origin main
             echo "${{ secrets.ENV_FILE }}" > .env
             docker compose down
