@@ -1,0 +1,68 @@
+provider "aws" {
+  region = var.aws_region
+}
+
+
+resource "aws_security_group" "venuesync_sg" {
+  name        = "venuesync-sg"
+  description = "VenueSync security group"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name    = "venuesync-sg"
+    Project = "VenueSync"
+  }
+}
+
+
+resource "aws_instance" "venuesync_server" {
+  ami                    = "ami-006f82a1d5a27da54"
+  instance_type          = var.instance_type     
+  key_name               = var.key_pair_name       
+  vpc_security_group_ids = [aws_security_group.venuesync_sg.id]
+
+  user_data = <<-EOF
+    #!/bin/bash
+    set -e
+
+    apt-get update -y
+    apt-get install -y docker.io docker-compose-v2 git
+
+    systemctl start docker
+    systemctl enable docker
+
+    usermod -aG docker ubuntu
+  EOF
+
+  tags = {
+    Name    = "venuesync-server"
+    Project = "VenueSync"
+  }
+}
