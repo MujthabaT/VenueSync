@@ -28,6 +28,20 @@ resource "aws_security_group" "venuesync_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 3001
+    to_port     = 3001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -47,6 +61,11 @@ resource "aws_instance" "venuesync_server" {
   instance_type          = var.instance_type     
   key_name               = var.key_pair_name       
   vpc_security_group_ids = [aws_security_group.venuesync_sg.id]
+
+  root_block_device {
+    volume_size = 20
+    volume_type = "gp3"
+  }
 
   user_data = <<-EOF
     #!/bin/bash

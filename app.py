@@ -7,7 +7,9 @@ from functools import wraps
 
 app = Flask(__name__, static_folder='public')
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
-
+from prometheus_flask_exporter import PrometheusMetrics
+metrics = PrometheusMetrics(app)
+metrics.info('app_info', 'VenueSync Application', version='1.0.0')
 
 DB_CONFIG = {
     'host':     os.environ.get('DB_HOST', 'localhost'),

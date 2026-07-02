@@ -10,5 +10,5 @@ variable "key_pair_name" {
 
 variable "instance_type" {
   description = "EC2 instance type"
-  default     = "t3.micro"
+  default     = "t3.small"
 }
