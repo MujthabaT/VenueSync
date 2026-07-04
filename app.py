@@ -3,11 +3,11 @@ import mysql.connector
 from flask import Flask, request, session, jsonify, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__, static_folder='public')
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
-from prometheus_flask_exporter import PrometheusMetrics
+
 metrics = PrometheusMetrics(app)
 metrics.info('app_info', 'VenueSync Application', version='1.0.0')
 

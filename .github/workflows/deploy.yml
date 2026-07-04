@@ -1,4 +1,4 @@
-name: Deploy VenueSync to AWS EC2
+name: CI/CD Pipeline VenueSync
 
 on:
   push:
@@ -6,9 +6,22 @@ on:
       - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
 
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt flake8
+      - run: flake8 . --max-line-length=120
+      - run: python -c "import app"
+      - run: docker build -t venuesync .
+
+  CD:
+    needs: CI
+    runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
